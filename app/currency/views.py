@@ -1,25 +1,30 @@
-# from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render
+# from django.http import HttpResponse
 
-from currency.models import ContactUs
+
+from currency.models import ContactUs, Rate
 # Create your views here.
 
 
-def hello_world(request):
-    return HttpResponse('Hello world!')
+def index(request):
+    return render(request, 'index.html')
 
 
 def contactus_list(request):
     contacts = ContactUs.objects.all()
 
-    result = []
+    context = {
+        'contactus_list': contacts
+    }
 
-    for contact in contacts:
-        result.append(
-            f'ID: {contact.id} ',
-            f'Email: {contact.email_from} ',
-            f'Subject: {contact.subject} ',
-            f'Message: {contact.message}'
-        )
+    return render(request, 'contactus_list.html', context=context)
 
-    return HttpResponse(str(result))
+
+def rate_list(request):
+    rates = Rate.objects.all()
+
+    context = {
+        'rate_list': rates
+    }
+
+    return render(request, 'rate_list.html', context=context)
