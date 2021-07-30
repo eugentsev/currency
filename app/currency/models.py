@@ -1,6 +1,11 @@
 from django.db import models
 
 
+class Source(models.Model):
+    source_url = models.CharField(max_length=225)
+    name = models.CharField(max_length=64)
+
+
 class ContactUs(models.Model):
     email_from = models.EmailField(max_length=254)
     subject = models.CharField(max_length=64)
