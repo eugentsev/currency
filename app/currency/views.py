@@ -1,10 +1,7 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
-
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from currency.models import ContactUs, Rate, Source
 from currency.forms import SourceForm
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 # Create your views here.
 
 
@@ -46,4 +43,3 @@ class SourceDeleteView(DeleteView):
     queryset = Source.objects.all()
     success_url = reverse_lazy('currency:source-list')
     template_name = 'source_delete.html'
-
