@@ -2,13 +2,13 @@
 
 {% block main_content %}
 <div>
-    <a href="/contactus/list/">Contact Us List</a>
+    <a href="{% url 'currency:contactus-list' %}">Contact Us List</a>
 </div>
 <div>
-    <a href="/rate/list/">Rate List</a>
+    <a href="{% url 'currency:rate-list' %}">Rate List</a>
 </div>
 <div>
-    <a href="/source/list/">Source List</a>
+    <a href="{% url 'currency:source-list' %}">Source List</a>
 </div>
 Hello from index
 {% endblock %}
