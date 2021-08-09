@@ -1,7 +1,8 @@
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from currency.models import ContactUs, Rate, Source
-from currency.forms import SourceForm
+from currency.forms import SourceForm, ContactUsForm
 from django.urls import reverse_lazy
+from django.core.mail import send_mail
 # Create your views here.
 
 
@@ -43,3 +44,29 @@ class SourceDeleteView(DeleteView):
     queryset = Source.objects.all()
     success_url = reverse_lazy('currency:source-list')
     template_name = 'source_delete.html'
+
+
+class ContactUsCreateView(CreateView):
+    queryset = ContactUs.objects.all()
+    form_class = ContactUsForm
+    success_url = reverse_lazy('currency:contactus-list')
+    template_name = 'contactus_create.html'
+
+    def form_valid(self, form):
+        subject = form.cleaned_data['subject']
+        message = form.cleaned_data['message']
+        email_from = form.cleaned_data['email_from']
+
+        full_email_body = f'''
+        Email From: {email_from}
+        Body: {message}'''
+
+        send_mail(
+            subject,
+            full_email_body,
+            'testeugen123@gmail.com',
+            ['tsevelov2019@gmail.com'],
+            fail_silently=False,
+        )
+
+        return super().form_valid(form)
