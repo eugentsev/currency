@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'currency',
     'django_extensions',
+    'silk',
 ]
 
 MIDDLEWARE = [
@@ -41,6 +42,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+
+    'currency.middlewares.ResponseTimeMiddleware',
+    'silk.middleware.SilkyMiddleware',
 ]
 
 ROOT_URLCONF = 'settings.urls'
