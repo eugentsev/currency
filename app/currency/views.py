@@ -2,7 +2,9 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, D
 from currency.models import ContactUs, Rate, Source
 from currency.forms import SourceForm, ContactUsForm
 from django.urls import reverse_lazy
-from django.core.mail import send_mail
+# from django.core.mail import send_mail
+
+from currency.tasks import contactus_task
 # Create your views here.
 
 
@@ -61,12 +63,6 @@ class ContactUsCreateView(CreateView):
         Email From: {email_from}
         Body: {message}'''
 
-        send_mail(
-            subject,
-            full_email_body,
-            'testeugen123@gmail.com',
-            ['tsevelov2019@gmail.com'],
-            fail_silently=False,
-        )
+        contactus_task.apply_async(args=(subject, ), kwargs={'body': full_email_body})
 
         return super().form_valid(form)

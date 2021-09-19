@@ -1,5 +1,5 @@
-
 from pathlib import Path
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -129,3 +129,33 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'testeugen123@gmail.com'
 EMAIL_HOST_PASSWORD = 'moneymezheka8934'
+SUPPORT_EMAIL = 'tsevelov2019@gmail.com'
+
+CELERY_BROKER_URL = 'amqp://localhost'
+
+CELERY_BEAT_SCHEDULE = {
+    'privatbank': {
+        'task': 'currency.tasks.parse_privatbank',
+        'schedule': crontab(minute='*/2'),
+    },
+
+    'monobank': {
+        'task': 'currency.tasks.parse_monobank',
+        'schedule': crontab(minute='*/5'),
+    },
+
+    'vkurse': {
+        'task': 'currency.tasks.parse_vkurse',
+        'schedule': crontab(minute='*/2'),
+    },
+
+    'alfabank': {
+        'task': 'currency.tasks.parse_alfabank',
+        'schedule': crontab(minute='*/5')
+    },
+
+    'pivdennyi': {
+        'task': 'currency.tasks.parse_pivdennyi',
+        'schedule': crontab(minute='*/5')
+    },
+}
