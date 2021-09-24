@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+
+Are you sure you want to delete this item?<br>
+
+ID: {{ rate.id }}<br>
+Source: {{ rate.source }}<br>
+Type: {{ rate.type }}<br>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+    </form>
+{% endblock %}

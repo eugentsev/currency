@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block main_content %}
+
+<a href="{% url 'currency:rate-create' %}">Create Rate</a>
+
 <table>
   <tr>
-    <td width="100">ID</td>
-    <td width="100">Source</td>
     <td width="100">Type</td>
-    <td width="190">Created</td>
     <td width="100">Sale</td>
     <td width="100">Buy</td>
   </tr>
@@ -14,13 +14,17 @@
 {% for rate in rate_list %}
 <table>
   <tr>
-    <td width="100">{{ rate.id }}</td>
-    <td width="100">{{ rate.source}}</td>
     <td width="100">{{ rate.get_type_display }}</td>
-    <td width="190">{{ rate.created }}</td>
     <td width="100">{{ rate.sale }}</td>
-    <td width="100">{{ rate.buy }}</td>
+    <td width="100">{{ rate.buy }} </td>
+    <td>
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'currency:rate-details' rate.pk %}">Details</a>
+        <a href="{% url 'currency:rate-update' rate.pk %}">Update</a>
+        <a href="{% url 'currency:rate-delete' rate.pk %}">Delete</a><br></td>
+      {% endif %}
   </tr>
+
 <table/>
 {% endfor %}
 {% endblock %}
