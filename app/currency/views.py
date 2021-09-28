@@ -1,7 +1,8 @@
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from currency.models import ContactUs, Rate, Source
-from currency.forms import SourceForm, ContactUsForm
+from currency.forms import SourceForm, ContactUsForm, RateForm
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 # from django.core.mail import send_mail
 
 from currency.tasks import contactus_task
@@ -16,6 +17,37 @@ class ContactUsListView(ListView):
 class RateListView(ListView):
     queryset = Rate.objects.all()
     template_name = 'rate_list.html'
+
+
+class RateDetailsView(LoginRequiredMixin, DetailView):
+    queryset = Rate.objects.all()
+    template_name = 'rate_details.html'
+
+
+class RateCreateView(LoginRequiredMixin, CreateView):
+    queryset = Rate.objects.all()
+    form_class = RateForm
+    success_url = reverse_lazy('currency:rate-list')
+    template_name = 'rate_create.html'
+
+
+class RateUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    queryset = Rate.objects.all()
+    form_class = RateForm
+    success_url = reverse_lazy('currency:rate-list')
+    template_name = 'rate_update.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser is True
+
+
+class RateDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    queryset = Rate.objects.all()
+    success_url = reverse_lazy('currency:rate-list')
+    template_name = 'rate_delete.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser is True
 
 
 class SourceListView(ListView):

@@ -5,6 +5,7 @@ import requests
 from decimal import Decimal
 from currency.models import Rate
 from bs4 import BeautifulSoup
+from currency import model_choices as mch
 
 
 def round_currency(num):
@@ -48,11 +49,16 @@ def parse_privatbank():
 
     source = 'privatbank'
     rates = response.json()
-    currency_types = ('USD', 'EUR', 'RUR',)
+    currency_types = {
+        'USD': mch.TYPE_USD,
+        'EUR': mch.TYPE_EUR,
+        'RUR': mch.TYPE_RUB,
+    }
 
     for rate in rates:
-        if rate['ccy'] in currency_types:
-            currency_type = rate['ccy']
+        ct = rate['ccy']
+        if ct in currency_types:
+            currency_type = currency_types[ct]
             sale = round_currency(rate['sale'])
             buy = round_currency(rate['buy'])
 
@@ -70,19 +76,19 @@ def parse_monobank():
 
     source = 'monobank'
     rates = response.json()
-    currency_types = (840, 978, 643,)
+    currency_types = {
+        840: mch.TYPE_USD,
+        978: mch.TYPE_EUR,
+        643: mch.TYPE_RUB,
+    }
 
     for rate in rates:
-        if rate['currencyCodeA'] in currency_types and rate['currencyCodeB'] == 980:
+        ct = rate['currencyCodeA']
+        uah_type = rate['currencyCodeB']
+        if ct in currency_types and uah_type == 980:
             sale = round_currency(rate['rateSell'])
             buy = round_currency(rate['rateBuy'])
-
-            if rate['currencyCodeA'] == 840:
-                currency_type = 'USD'
-            elif rate['currencyCodeA'] == 978:
-                currency_type = 'EUR'
-            elif rate['currencyCodeA'] == 643:
-                currency_type = 'RUB'
+            currency_type = currency_types[ct]
 
             add_rates(sale, buy, currency_type, source)
 
@@ -98,20 +104,18 @@ def parse_vkurse():
 
     source = 'vkurse'
     rates = response.json()
-    currency_types = ('Dollar', 'Euro', 'Rub',)
+    currency_types = {
+        'Dollar': mch.TYPE_USD,
+        'Euro': mch.TYPE_EUR,
+        'Rub': mch.TYPE_RUB,
+    }
 
     for rate in rates:
         if rate in currency_types:
+            currency_type = currency_types[rate]
             price = rates[rate]
             sale = round_currency(price['sale'])
             buy = round_currency(price['buy'])
-
-            if rate == 'Dollar':
-                currency_type = 'USD'
-            elif rate == 'Euro':
-                currency_type = 'EUR'
-            elif rate == 'Rub':
-                currency_type = 'RUB'
 
             add_rates(sale, buy, currency_type, source)
 
@@ -127,7 +131,11 @@ def parse_alfabank():
 
     source = 'alfabank'
     soup = BeautifulSoup(response.text, 'html.parser')
-    currency_types = ('USD', 'EUR', 'RUB',)
+    currency_types = {
+        'USD': mch.TYPE_USD,
+        'EUR': mch.TYPE_EUR,
+        'RUB': mch.TYPE_RUB,
+    }
 
     for currency_type in currency_types:
         sale = round_currency(soup.find('span', {'data-currency': f'{currency_type}_SALE'}).text.strip())
@@ -147,11 +155,16 @@ def parse_pivdennyi():
     source = 'pivdennyi'
 
     rates = response.json()
-    currency_types = ('USD', 'EUR', 'RUB',)
+    currency_types = {
+        'USD': mch.TYPE_USD,
+        'EUR': mch.TYPE_EUR,
+        'RUB': mch.TYPE_RUB,
+    }
 
     for rate in rates:
-        currency_type = rate[1]
-        if currency_type in currency_types:
+        ct = rate[1]
+        if ct in currency_types:
+            currency_type = currency_types[ct]
             sale = round_currency(rate[3])
             buy = round_currency(rate[2])
 

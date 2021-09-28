@@ -1,4 +1,5 @@
 from django.db import models
+from currency import model_choices as mch
 
 
 class Source(models.Model):
@@ -17,4 +18,14 @@ class Rate(models.Model):
     buy = models.DecimalField(max_digits=5, decimal_places=2)
     created = models.DateTimeField(auto_now_add=True)
     source = models.CharField(max_length=32)
-    type = models.CharField(max_length=3) # noqa
+    type = models.CharField(max_length=3, choices=mch.RATE_TYPES) # noqa
+
+
+class ResponseLog(models.Model):
+    status_code = models.PositiveSmallIntegerField()
+    path = models.CharField(max_length=255)
+    created = models.DateTimeField(auto_now_add=True)
+    request_method = models.CharField(max_length=4, choices=mch.REQUESTS_METHOD)
+    response_time = models.PositiveSmallIntegerField(
+        help_text='in milliseconds'
+    )
