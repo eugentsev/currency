@@ -3,7 +3,7 @@
 
     {% if request.user.is_anonymous %}
         <div><a href="{% url 'login' %}">Login</a></div>
-        <div><a href="#">SignUp</a></div>
+        <div><a href="#">Reg</a></div>
     {% else %}
         Hello, {{ request.user.first_name }}
         <div><a href="{% url 'accounts:my-profile' request.user.id %}">My Profile</a></div>
